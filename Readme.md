@@ -24,4 +24,4 @@ So I will introduce my VPC Module ,it's structure ,the inputs and the outputs.
 
     - Route Tables: it's list of routes.
 
-3. Output.tf : it includes sunets output.
+3. Output.tf : it includes subnets output.
