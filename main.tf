@@ -4,7 +4,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.group}-${var.env}-vpc1"
+    Name = "${var.group}-${var.env}-vpc"
   }
 }
 
@@ -13,30 +13,35 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+
+
 ###ELastic IP
 
 
 
 
-resource "aws_eip" "nat_instance" {
+resource "aws_eip" "nat" {
   vpc = true
 }
 
 ## Nat Getway
 
 
-resource "aws_nat_gateway" "nat_instance" {
-  allocation_id = aws_eip.nat_instance.id
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
   subnet_id=aws_subnet.public.0.id
+    tags = {
+    Name = "nat"
+  }
 }
 
 #Internet Getway
 
-resource "aws_internet_gateway" "IGW" {
+resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "IGW"
+    Name = "igw"
   }
 }
 
@@ -50,7 +55,7 @@ resource "aws_subnet" "public" {
   cidr_block = element(var.cidr_block_public,count.index)
   availability_zone = element(data.aws_availability_zones.available.names,  count.index)
   tags = {
-   Name = "${var.group}-${var.env}-vpc1-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-public"
+   Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-public"
   }
 }
 
@@ -66,7 +71,7 @@ resource "aws_subnet" "private" {
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-   Name = "${var.group}-${var.env}-vpc1-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-private"
+   Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-private"
   }
 }
 
@@ -75,31 +80,31 @@ resource "aws_subnet" "private" {
 
 # Creating Routing Table
 
-resource "aws_route_table" "Routing_table" {
+resource "aws_route_table" "table-1" {
   vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.IGW.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   tags = {
-    Name = "Routing_table_IGW "
+    Name = " table for public instances"
   }
 }
 
 
-resource "aws_route_table" "Routing_table_nat" {
+resource "aws_route_table" "table-2" {
   vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat_instance.id
+    gateway_id = aws_nat_gateway.nat.id
   }
 
 
   tags = {
-    Name = "Routing_table_nat"
+    Name = "table for private instances"
   }
 }
 
@@ -108,12 +113,12 @@ resource "aws_route_table" "Routing_table_nat" {
 resource "aws_route_table_association" "table_1" {
   count=var.public_subnet_count
   subnet_id      = element(split(",", join(",", aws_subnet.public.*.id)), count.index)
-  route_table_id = aws_route_table.Routing_table.id
+  route_table_id = aws_route_table.table-1.id
 }
 resource "aws_route_table_association" "table_2" {
     count=var.private_subnet_count
 
   subnet_id      = element(split(",", join(",", aws_subnet.private.*.id)), count.index)
-  route_table_id = aws_route_table.Routing_table_nat.id
+  route_table_id = aws_route_table.table-2.id
 }
 
