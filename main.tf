@@ -13,41 +13,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-
-
-###ELastic IP
-
-
-
-
-resource "aws_eip" "nat" {
-  vpc = true
-}
-
-## Nat Getway
-
-
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id=aws_subnet.public.0.id
-    tags = {
-    Name = "nat"
-  }
-}
-
-#Internet Getway
-
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc.id
-
-  tags = {
-    Name = "igw"
-  }
-}
-
-
 ############# Public Subnet
-
 
 resource "aws_subnet" "public" {
   count = var.public_subnet_count
@@ -58,8 +24,6 @@ resource "aws_subnet" "public" {
    Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-public"
   }
 }
-
-
 
 ############# Private subnet
 resource "aws_subnet" "private" {
@@ -77,6 +41,39 @@ resource "aws_subnet" "private" {
 
 
 
+###ELastic IP
+
+resource "aws_eip" "nat" {
+  vpc = true
+  tags = {
+    Name ="${var.group}-${var.env}-eip"
+  }
+}
+
+## Nat Getway
+
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat.id
+  subnet_id=aws_subnet.public.0.id
+    tags = {
+    Name = "${var.group}-${var.env}-nat"
+  }
+}
+
+#Internet Getway
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "${var.group}-${var.env}-igw"
+  }
+}
+
+
+
+
+
 
 # Creating Routing Table
 
@@ -89,7 +86,8 @@ resource "aws_route_table" "table-1" {
   }
 
   tags = {
-    Name = " table for public instances"
+    Name = "${var.group}-${var.env}-public"
+
   }
 }
 
@@ -104,7 +102,7 @@ resource "aws_route_table" "table-2" {
 
 
   tags = {
-    Name = "table for private instances"
+    Name = "${var.group}-${var.env}-private"
   }
 }
 
