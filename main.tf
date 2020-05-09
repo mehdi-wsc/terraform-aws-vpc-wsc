@@ -4,59 +4,56 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.group}-${var.env}-vpc"
+    Name = "${var.group}-${var.env}-vpc1-vpc"
   }
 }
-
 
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-############# Public Subnet
+# Public Subnet
 
 resource "aws_subnet" "public" {
-  count = var.public_subnet_count
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = element(var.cidr_block_public,count.index)
-  availability_zone = element(data.aws_availability_zones.available.names,  count.index)
+  count             = var.public_subnet_count
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = element(var.cidr_block_public, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
   tags = {
-   Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-public"
+    Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-nginx-public"
   }
 }
 
-############# Private subnet
+# Private subnet
 resource "aws_subnet" "private" {
-  vpc_id     = aws_vpc.vpc.id
-  count = var.private_subnet_count
+  vpc_id = aws_vpc.vpc.id
+  count  = var.private_subnet_count
 
-  cidr_block = element(var.cidr_block_private,count.index)
+  cidr_block = element(var.cidr_block_private, count.index)
 
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-   Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-private"
+    Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-nginx-private"
   }
 }
 
-
-
-###ELastic IP
+#ELastic IP
 
 resource "aws_eip" "nat" {
   vpc = true
   tags = {
-    Name ="${var.group}-${var.env}-eip"
+    Name = "${var.group}-${var.env}-nginx-eip"
   }
 }
 
-## Nat Getway
+# Nat Getway
 
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
-  subnet_id=aws_subnet.public.0.id
-    tags = {
-    Name = "${var.group}-${var.env}-nat"
+  subnet_id     = aws_subnet.public.0.id
+  tags = {
+    Name = "${var.group}-${var.env}-nginx-ngw"
   }
 }
 
@@ -66,15 +63,9 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.group}-${var.env}-igw"
+    Name = "${var.group}-${var.env}-vpc1-igw"
   }
 }
-
-
-
-
-
-
 # Creating Routing Table
 
 resource "aws_route_table" "table-1" {
@@ -86,11 +77,10 @@ resource "aws_route_table" "table-1" {
   }
 
   tags = {
-    Name = "${var.group}-${var.env}-public"
+    Name = "${var.group}-${var.env}-bastion-public-rt"
 
   }
 }
-
 
 resource "aws_route_table" "table-2" {
   vpc_id = aws_vpc.vpc.id
@@ -100,23 +90,21 @@ resource "aws_route_table" "table-2" {
     gateway_id = aws_nat_gateway.nat.id
   }
 
-
   tags = {
-    Name = "${var.group}-${var.env}-private"
+    Name = "${var.group}-${var.env}-ngiinx-private-rt"
   }
 }
 
 #Association of routes
 
 resource "aws_route_table_association" "table_1" {
-  count=var.public_subnet_count
+  count          = var.public_subnet_count
   subnet_id      = element(split(",", join(",", aws_subnet.public.*.id)), count.index)
   route_table_id = aws_route_table.table-1.id
 }
 resource "aws_route_table_association" "table_2" {
-    count=var.private_subnet_count
+  count = var.private_subnet_count
 
   subnet_id      = element(split(",", join(",", aws_subnet.private.*.id)), count.index)
   route_table_id = aws_route_table.table-2.id
 }
-
