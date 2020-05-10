@@ -4,7 +4,11 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "${var.group}-${var.env}-vpc1-vpc"
+    Name           = "${var.group}-${var.env}-vpc1-vpc"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 
@@ -20,8 +24,13 @@ resource "aws_subnet" "public" {
   cidr_block        = element(var.cidr_block_public, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
   tags = {
-    Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-nginx-public"
+    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-nginx-public"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
+
 }
 
 # Private subnet
@@ -34,7 +43,11 @@ resource "aws_subnet" "private" {
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-    Name = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-nginx-private"
+    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-nginx-private"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 
@@ -43,7 +56,11 @@ resource "aws_subnet" "private" {
 resource "aws_eip" "nat" {
   vpc = true
   tags = {
-    Name = "${var.group}-${var.env}-nginx-eip"
+    Name           = "${var.group}-${var.env}-nginx-eip"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 
@@ -53,7 +70,11 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public.0.id
   tags = {
-    Name = "${var.group}-${var.env}-nginx-ngw"
+    Name           = "${var.group}-${var.env}-nginx-ngw"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 
@@ -63,7 +84,11 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "${var.group}-${var.env}-vpc1-igw"
+    Name           = "${var.group}-${var.env}-vpc1-igw"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 # Creating Routing Table
@@ -77,8 +102,11 @@ resource "aws_route_table" "table-1" {
   }
 
   tags = {
-    Name = "${var.group}-${var.env}-bastion-public-rt"
-
+    Name           = "${var.group}-${var.env}-bastion-public-rt"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
   }
 }
 
@@ -91,7 +119,12 @@ resource "aws_route_table" "table-2" {
   }
 
   tags = {
-    Name = "${var.group}-${var.env}-ngiinx-private-rt"
+    Name           = "${var.group}-${var.env}-ngiinx-private-rt"
+    owner          = var.owner
+    account        = terraform.workspace
+    createdBy      = var.firstname
+    taggingVersion = "1.0.0"
+
   }
 }
 
