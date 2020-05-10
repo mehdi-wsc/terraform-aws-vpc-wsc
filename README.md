@@ -23,7 +23,7 @@ module "vpc-wsc" {
 
 - The module will create the following AWS resources:
     * Aws Subnet :  subnet is a logical subdivision of an IP network.
-    * Internet Getway IFW :An Internet Gateway is a logical connection between an Amazon VPC and the Internet.
+    * Internet Getway IGW :An Internet Gateway is a logical connection between an Amazon VPC and the Internet.
     * Nat Getway :A NAT getway configures to forward traffic to the Internet.
     * Route Tables: it's list of routes .
 
