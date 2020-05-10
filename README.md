@@ -1,27 +1,74 @@
-# Terraform Module
-One of the best practise to create reused code is to utilize modules , terraform offers this way to avoid repitition.<br>
-So I will introduce my VPC Module ,it's structure ,the inputs and the outputs.
-<br>
-- Structure of the module is simple , I avail this simplicity and I put just three files : <br>
-1. variables.tf : Contains variables necessary to launch the module, they are :
-    - group : the group they are working.
-    - env   : the Environnement where you are (dev/prod for example).
-    - region : Aws Region u are working in.
-    - vpc_cidr : Type your Vpc address with CIDR notation.
-    - public_subnet_count : Number of public subnets you would.
-    - private_subnet_count : NUmber of private subnets you would.
+# terraform-aws-vpc
+- Terraform module to provision a VPC with all elements(subnets ,internet getway,nat getway,routes tables).
+- it's an opensource module under GPL license
+## Features
 
-    - cidr_block_private : Type your Public addresses for your subnets.
-    - cidr_block_public : Type your Privates addresses for your subnets.
+## Usage
+```
+module "vpc-wsc" {
+  source               = "mehdi-wsc/vpc-wsc/aws"
+  version              = "0.0.3"
+  group                = "group"
+  env                  = "dev"
+  region               = "eu-west-1"
+  vpc_cidr             = "10.0.0.0/16"
+  public_subnet_count  = "1"
+  private_subnet_count = "1"
+  cidr_block_private   = ["10.0.1.0/24"]
+  cidr_block_public    = ["10.0.2.0/24"]
 
-2. Main.tf : Contains configurations to create  elements of VPC decribed below :
+}
+```
+## Features:
 
-    - Subnet :  subnet is a logical subdivision of an IP network.
+- The module will create the following AWS resources:
+    * Aws Subnet :  subnet is a logical subdivision of an IP network.
+    * Internet Getway IFW :An Internet Gateway is a logical connection between an Amazon VPC and the Internet.
+    * Nat Getway :A NAT getway configures to forward traffic to the Internet.
+    * Route Tables: it's list of routes .
 
-    - Internet Getway :An Internet Gateway is a logical connection between an Amazon VPC and the Internet.
 
-    - Nat Getway :A NAT getway configures to forward traffic to the Internet.
+## Input Variables:
 
-    - Route Tables: it's list of routes.
+| name                 | description                                             | type         |
+|----------------------|---------------------------------------------------------|--------------|
+| group                | the group they are working.                             | string       |
+| env                  | the Environnement where you are (dev/prod for example). | string       |
+| region               | Aws Region u are working in.                            | string       |
+| vpc_cidr             | Type your Vpc address with CIDR notation.               | string       |
+| public_subnet_count  | Number of public subnets you would.                     | number       |
+| private_subnet_count | Number of private subnets you would.                    | number       |
+| cidr_block_public    | Type your Privates addresses for your subnets.          | list(string) |
+| cidr_block_private   | Type your Public addresses for your subnets.            | list(string) |
 
-3. Output.tf : it includes subnets output.
+## Output Variables:
+
+| name               | description         |
+|--------------------|---------------------|
+| vpc_id             | VPC id              |
+| public_subnet_ids  | Public Subnets IDs  |
+| private_subnet_ids | Private Subnets IDs |
+
+## License
+```
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+                            Preamble
+
+  The GNU General Public License is a free, copyleft license for
+software and other kinds of works.
+
+  The licenses for most software and other practical works are designed
+to take away your freedom to share and change the works.  By contrast,
+the GNU General Public License is intended to guarantee your freedom to
+share and change all versions of a program--to make sure it remains free
+software for all its users.  We, the Free Software Foundation, use the
+GNU General Public License for most of our software; it applies also to
+any other work released this way by its authors.  You can apply it to
+your programs, too.
+```
