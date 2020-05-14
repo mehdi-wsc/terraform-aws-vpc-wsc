@@ -37,7 +37,7 @@ module "vpc-wsc" {
 |----------------------|---------------------------------------------------------|--------------|
 | group                | the group they are working.                             | string       |
 | env                  | the Environnement where you are (dev/prod for example). | string       |
-| region               | Aws Region u are working in.                            | string       |
+| region               | Aws Region you are working in.                          | string       |
 | owner                | The Owner of account                                    | string       |
 | firstname            | Your first name                                         | string       |
 | lastname             | Your last name                                          | string       |
