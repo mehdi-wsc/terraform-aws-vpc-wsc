@@ -2,7 +2,7 @@ name: CI for integration
 on: push
 jobs:
   go-tests:
-    name: Run Go Unit Tests
+    name: Run Go integration Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -21,9 +21,9 @@ jobs:
         run: go get "github.com/gruntwork-io/terratest/modules/aws" 
       
  
-      - name: Run Go Tests
+      - name: Run Go integration Tests
         working-directory: test
-        run: go test Vpc_integration_test.go 
+        run: go test Vpc_intergration_test.go 
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
