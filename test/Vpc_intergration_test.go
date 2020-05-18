@@ -18,7 +18,7 @@ func TestIntegrationVpc(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 
-	terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt ")...)
+	terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt")...)
 
 	terraform.InitAndApply(t, terraformOptions)
 
@@ -26,7 +26,4 @@ func TestIntegrationVpc(t *testing.T) {
 
 	aws.IsPublicSubnet(t, output_public, region)
 
-	output_private := terraform.Output(t, terraformOptions, "private_ids")
-
-	aws.IsPublicSubnet(t, output_private, region)
 }
