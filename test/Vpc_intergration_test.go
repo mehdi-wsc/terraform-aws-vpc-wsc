@@ -18,7 +18,7 @@ func TestIntegrationVpc(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 
-	terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt")...)
+	terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt --check")...)
 
 	terraform.InitAndApply(t, terraformOptions)
 
