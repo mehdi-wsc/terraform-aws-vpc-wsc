@@ -8,6 +8,14 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
+func TestSyntaxe(t *testing.T) {
+	terraformOptions := &terraform.Options{
+		TerraformDir: "../example",
+	}
+	terraform.RunTerraformCommand(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt", "--check")...)
+
+}
+
 func TestIntegrationVpc(t *testing.T) {
 	t.Parallel()
 	region := "eu-west-1"
@@ -17,8 +25,6 @@ func TestIntegrationVpc(t *testing.T) {
 	}
 
 	defer terraform.Destroy(t, terraformOptions)
-
-	terraform.RunTerraformCommandAndGetStdoutE(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt --check")...)
 
 	terraform.InitAndApply(t, terraformOptions)
 
