@@ -8,7 +8,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestSyntaxe(t *testing.T) {
+func TestSyntaxForIntegration(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../example",
 	}

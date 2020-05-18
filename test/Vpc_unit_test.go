@@ -8,6 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestSyntaxForUnit(t *testing.T) {
+	terraformOptions := &terraform.Options{
+		TerraformDir: "../example",
+	}
+	terraform.RunTerraformCommand(t, terraformOptions, terraform.FormatArgs(terraformOptions, "fmt", "--check")...)
+
+}
 func TestUnitVpc(t *testing.T) {
 	t.Parallel()
 	terraformOptions := &terraform.Options{
