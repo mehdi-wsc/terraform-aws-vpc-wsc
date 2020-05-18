@@ -1,26 +1,26 @@
 variable "group" {
-  default=""
+  default = ""
 }
 variable "env" {
-  default=""
+  default = ""
 }
 variable "region" {
-  default=""
+  default = ""
 }
 variable "vpc_cidr" {
-  default=""
+  default = ""
 }
 variable "public_subnet_count" {
-  default=""
+  default = ""
 }
 variable "private_subnet_count" {
-  default=""
+  default = ""
 }
 variable "cidr_block_private" {
-  default=""
+  default = ""
 }
 variable "cidr_block_public" {
-  default=""
+  default = ""
 }
 
 

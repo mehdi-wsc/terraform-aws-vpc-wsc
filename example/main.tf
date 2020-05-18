@@ -4,9 +4,9 @@ provider "aws" {
 
 module "vpc-wsc" {
   source               = "mehdi-wsc/vpc-wsc/aws"
-                version              = "0.0.3"
+  version              = "0.0.3"
   group                = var.group
-          env                  = var.env
+  env                  = var.env
   region               = var.region
   vpc_cidr             = var.vpc_cidr
   public_subnet_count  = var.private_subnet_count
