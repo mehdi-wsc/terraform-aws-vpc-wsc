@@ -2,8 +2,8 @@
 name: CI
 on: push
 jobs:
-  go-tests:
-    name: Run Go Unit Tests
+  vpc-unit-tests:
+    name: Run Go Unit Tests for terraform
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
