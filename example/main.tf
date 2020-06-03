@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "vpc-wsc" {
-  source               = "../"
+      source               = "../"
   group                = var.group
   env                  = var.env
   region               = var.region
