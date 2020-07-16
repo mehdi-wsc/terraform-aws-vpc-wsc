@@ -19,10 +19,11 @@ data "aws_availability_zones" "available" {
 # Public Subnet
 
 resource "aws_subnet" "public" {
-  count             = var.public_subnet_count
+  count             = var.public_subnet_count ? 1 : 0
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = element(var.cidr_block_public, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch = var.map_ip
   tags = {
     Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-nginx-public"
     owner          = var.owner
