@@ -1,7 +1,6 @@
 provider "aws" {
   region = var.region
 }
-
 module "vpc-wsc" {
   source               = "../"
   group                = var.group

@@ -1,6 +1,11 @@
 variable "group" {
   description = "the group they are working"
 }
+variable "map_ip" {
+  default     = true
+  description = " map ip"
+  type        = bool
+}
 variable "env" {
   description = "the Environnement where you are (dev/prod for example)"
 }
