@@ -19,7 +19,7 @@ data "aws_availability_zones" "available" {
 # Public Subnet
 
 resource "aws_subnet" "public" {
-  count                   = var.public_subnet_count 
+  count                   = var.public_subnet_count
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = element(var.cidr_block_public, count.index)
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
