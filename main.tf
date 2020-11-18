@@ -30,6 +30,7 @@ resource "aws_subnet" "public" {
     account        = terraform.workspace
     createdBy      = var.firstname
     taggingVersion = "1.0.0"
+    "kubernetes.io/cluster/kube" = "shared"
   }
 
 }
