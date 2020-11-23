@@ -25,7 +25,7 @@ resource "aws_subnet" "public" {
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch = var.map_ip
   tags = {
-    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-nginx-public"
+    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 1)}-${count.index}-public"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
@@ -45,7 +45,7 @@ resource "aws_subnet" "private" {
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-nginx-private"
+    Name           = "${var.group}-${var.env}-vpc-${element(data.aws_availability_zones.available.names, 2)}-${count.index}-private"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
@@ -58,7 +58,7 @@ resource "aws_subnet" "private" {
 resource "aws_eip" "nat" {
   vpc = true
   tags = {
-    Name           = "${var.group}-${var.env}-nginx-eip"
+    Name           = "${var.group}-${var.env}-eip"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
@@ -72,7 +72,7 @@ resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public.0.id
   tags = {
-    Name           = "${var.group}-${var.env}-nginx-ngw"
+    Name           = "${var.group}-${var.env}-ngw"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
@@ -104,7 +104,7 @@ resource "aws_route_table" "table-1" {
   }
 
   tags = {
-    Name           = "${var.group}-${var.env}-bastion-public-rt"
+    Name           = "${var.group}-${var.env}-public-rt"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
@@ -121,7 +121,7 @@ resource "aws_route_table" "table-2" {
   }
 
   tags = {
-    Name           = "${var.group}-${var.env}-ngiinx-private-rt"
+    Name           = "${var.group}-${var.env}-private-rt"
     owner          = var.owner
     account        = terraform.workspace
     createdBy      = var.firstname
